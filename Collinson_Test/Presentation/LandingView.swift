@@ -11,7 +11,21 @@ struct LandingView: View {
     
     var body: some View {
         VStack {
-            NavigationLink("New York", destination: ActivitiesView(viewModel: ActivityViewModel()))
+            switch viewModel.loadingState {
+            case .loading(let msg):
+                ProgressView {
+                    Text(msg)
+                }
+            case .success(let array):
+                List {
+                    ForEach(array, id: \.id) { city in
+                        NavigationLink(city.name, destination: ActivitiesView(viewModel: ActivityViewModel(city: city)))
+                    }
+                }
+
+            case .failure(let message):
+                Text(message)
+            }
         }
         .navigationTitle("Search city")
         .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search City"))

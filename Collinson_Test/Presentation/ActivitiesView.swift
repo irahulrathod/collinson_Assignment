@@ -12,12 +12,33 @@ struct ActivitiesView: View {
     
     var body: some View {
         VStack {
-            
-            ProgressView {
-                Text("Loading")
+            switch viewModel.loadingState {
+            case .loading:
+                ProgressView {
+                    Text("Loading")
+                }
+            case .success(let dayPlan):
+                List {
+                    ForEach(dayPlan) { activity in
+                        Section {
+                            Text(activity.forecast.date)
+                        }
+                        ForEach(activity.recommendations) { day in
+                            HStack {
+                                Text(day.activity.rawValue)
+                                Text("\(day.score)")
+                            }
+                        }
+                    }
+                }
+            case .failure(let error):
+                Text(error)
             }
         }
         .navigationTitle("Activities")
+        .onAppear {
+            viewModel.getActivities(city: viewModel.city)
+        }
     }
 }
 
