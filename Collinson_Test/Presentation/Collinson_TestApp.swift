@@ -11,7 +11,9 @@ import SwiftUI
 struct Collinson_TestApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                LandingView()
+            }
         }
     }
 }
